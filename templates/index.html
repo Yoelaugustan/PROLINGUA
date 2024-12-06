@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Recognition</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Speech Recognition</h1>
+    <button id="startRecording">Start Recording</button>
+    <button id="stopRecording" disabled>Stop Recording</button>
+    <button id="showTranscript" disabled onclick="showTranscript()">See Transcript</button>
+
+    <h2>Recorded Speech</h2>
+    <div id="output"></div>
+    <div id="transcript"></div>
+
+    <button id="seeResultButton" disabled onclick="fetchAndShowResult()">See Result</button>
+    <div id="resultContainer"></div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
