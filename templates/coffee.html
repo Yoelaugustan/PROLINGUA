@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Page with Messaging</title>
+    <link rel="stylesheet" href="/static/coffee_styles.css"> <!-- You can merge both styles into one if needed -->
+</head>
+<body>
+    <header>
+        <div class="left-section">
+            <h1>PROLINGUA</h1>
+            <nav>
+                <a href="index.html">About Us</a>
+                <a href="/templates/coffee.html">Coffee!</a>
+                <a href="vocab.html">Vocab</a>
+            </nav>
+        </div>
+        <div class="settings">Settings</div>
+    </header>
+    
+    <main>
+        <div class="chat-container">
+            <!-- Existing Chat Messages -->
+            <div class="message user">Mama a girl behind you &lt;3</div>
+            <div class="message ai">Mama a girl behind you &lt;3</div>
+            <!-- Messages will be dynamically added here -->
+        </div>
+
+        <div id="micPopup" class="popup hidden">
+            <div class="popup-content">
+                <i class="mic-icon">🎤</i>
+                <div class="waveform">[Waveform Animation Placeholder]</div>
+                <p><span id="recordedText">Listening...</span></p>
+                <button id="closePopup">OK</button>
+            </div>
+        </div>
+        
+
+        <footer>
+            <button class="mic-button">&#x1F3A4;</button>
+            <input type="text" id="messageInput" placeholder="Type a message..." />
+            <button id="sendMessageBtn">Send</button>
+            <button class="done-button">DONE</button>
+        </footer>
+    </main>
+
+    <script src="/static/script.js"></script> <!-- Add JavaScript functionality -->
+</body>
+</html>
