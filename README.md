@@ -7,7 +7,7 @@
    cd PROLINGUA
 2. Install dependencies:
    ```bash
-   pip install -r requirement.txt
+   pip install -r requirements.txt
 3. Start the application:
    ```bash
    python app.py
