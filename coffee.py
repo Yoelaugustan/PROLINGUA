@@ -58,6 +58,7 @@ def upload_audio():
 
         file_counter += 1
         last_uploaded_file_path = converted_filepath
+        print(last_uploaded_file_path)
 
         # Validate file size
         if os.path.getsize(converted_filepath) == 0:
@@ -84,7 +85,7 @@ def upload_audio():
         word_accuracies = {}
         if word_timings:
             word_accuracies = calculate_pronunciation_per_word(last_uploaded_file_path, word_timings)
-
+            print(word_accuracies)
         return jsonify({
             'user_transcript': user_transcript,
             'overall_accuracy': {
@@ -149,11 +150,11 @@ def calculate_pronunciation_per_word(audio_file_path, word_timings):
     pipe = pipeline("audio-classification", model="JohnJumon/pronunciation_accuracy", device=0)  # Use GPU if available
     word_accuracies = {}
     audio = AudioSegment.from_file(audio_file_path, format="wav")
-
+    word_counter = 1
     for word, (start_time, end_time) in word_timings.items():
         # Extract audio segment for the word
         word_audio = audio[start_time * 1000:end_time * 1000]  # pydub uses milliseconds
-        word_audio_path = f"temp_{word}.wav"
+        word_audio_path = f"temp_word{word_counter}.wav"
         word_audio.export(word_audio_path, format="wav")
         
         try:
