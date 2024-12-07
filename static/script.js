@@ -66,7 +66,7 @@ closePopupButton.addEventListener("click", () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    messageInput.value = data.transcript.text; // Show transcript in the input box
+                    messageInput.value = data.user_transcript; // Show transcript in the input box
                 } else {
                     console.error("Failed to transcribe audio.");
                 }
@@ -79,8 +79,9 @@ closePopupButton.addEventListener("click", () => {
 });
 
 sendMessageBtn.addEventListener("click", () => {
-    if (messageInput.value.trim() !== "") {
-        addMessage(messageInput.value, true);
-        messageInput.value = "";
+    const userMessage = messageInput.value.trim();
+    if (userMessage !== "") {
+        addMessage(userMessage, true); // Add message to the chat container
+        messageInput.value = ""; // Clear the input box
     }
 });
