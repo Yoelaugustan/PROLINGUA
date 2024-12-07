@@ -10,7 +10,7 @@
    pip install -r requirements.txt
 3. Start the application:
    ```bash
-   python app.py
+   python coffee.py
    
 ## Contributors
 - [Yoel](https://github.com/Yoelaugusta)
