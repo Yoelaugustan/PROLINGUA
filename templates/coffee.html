@@ -18,7 +18,7 @@
     </header>
     
     <main>
-        <div class="chat-container">
+        <div class="chat-container"> 
             <!-- Existing Chat Messages -->
             <div class="message user">Mama a girl behind you &lt;3</div>
             <div class="message ai">Mama a girl behind you &lt;3</div>
@@ -33,13 +33,35 @@
                 <button id="closePopup">OK</button>
             </div>
         </div>
+
+        <div id="confirmPopup" class="popup hidden"> <!-- Confirmation Popup -->
+            <div class="popup-content">
+                <div class="confirmTitle">CONFIRMATION</div>
+                <div class="confirmDesc">Are you sure to end this conversation?</div>
+                <div class="button-container">
+                    <button id="closeConfirmButton">NO</button>
+                    <button id="openResultPopup">YES</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="resultPopup" class="popup hidden"> <!-- Result Popup -->
+            <div class="popup-content">
+                <div class="check-container">
+                    <i class="check-icon">✔</i>    
+                </div>
+                <div class="resultDesc">You have completed the task!</div>
+                <button id="seeResultButton">See Result</button>
+            </div>
+        </div>
         
+        <div id="blackOverlay" class="overlay hidden"></div>
 
         <footer>
             <button class="mic-button">&#x1F3A4;</button>
             <input type="text" id="messageInput" placeholder="Type a message..." />
             <button id="sendMessageBtn">Send</button>
-            <button class="done-button">DONE</button>
+            <button class="done-button" id="done-button">DONE</button>
         </footer>
     </main>
 
