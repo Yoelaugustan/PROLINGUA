@@ -1,7 +1,13 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 /* General styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
+    font-family: Inter, sans-serif;
+    background: linear-gradient(180deg,#aca394,#fdf5e9,#fdf5e9);
     margin: 0;
     padding: 0;
 }
@@ -12,35 +18,53 @@ header {
     justify-content: space-between;
     align-items: center;
     background-color: #a46540;
-    padding: 10px 20px;
+    padding: 15px 20px;
     color: white;
-}
-
-.left-section {
-    display: flex;
-    align-items: center;
-    gap: 20px;
 }
 
 nav {
     display: flex;
-    gap: 15px;
+    gap: 20px;
 }
 
 nav a {
     color: white;
     text-decoration: none;
-    font-size: 1rem;
     font-weight: bold;
+    font-size: 1rem;
+    letter-spacing: 0.03rem;
 }
 
 nav a:hover {
     text-decoration: underline;
 }
 
+nav a:last-child{
+    position: absolute;
+    top: 1.6%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    letter-spacing: 0.25rem;
+    color: white;
+    text-decoration: none;
+    align-items: center;
+    font-weight: bold;
+}
+
+nav a:last-child:hover{
+    text-decoration: none;
+}
+
 .settings {
     font-size: 1rem;
     cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 0.03rem;
+}
+
+.settings:hover {
+    text-decoration: underline;
 }
 
 /* Chat styles */
@@ -48,11 +72,9 @@ nav a:hover {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    height: 60vh;
+    height: 76vh;
     padding: 20px;
     overflow-y: auto;
-    background-color: white;
-    border-radius: 10px;
     margin: 20px;
 }
 
@@ -65,15 +87,27 @@ nav a:hover {
 }
 
 .message.user {
-    background-color: #f1f1f1;
+    background-color: #a46540;
+    color: #edeae3;
     align-self: flex-end;
-    border-radius: 15px;
+    border-radius: 30px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+    box-shadow: -4px 8px 20px 0 rgba(0, 0, 0, 0.2);
 }
 
 .message.ai {
-    background-color: #e0e0e0;
+    background-color: #ffffff;
+    color: #4a4947;
     align-self: flex-start;
-    border-radius: 15px;
+    border-radius: 30px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+    box-shadow: -4px 8px 20px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* Message input styles */
@@ -86,7 +120,7 @@ nav a:hover {
 }
 
 .messages {
-    background-color: white;
+    background-color: #d6ccbe;
     border-radius: 15px;
     padding: 15px;
     overflow-y: auto;
@@ -100,20 +134,24 @@ nav a:hover {
 }
 
 #messageInput {
-    width: 80%;
-    padding: 10px;
+    width: 78%;
+    padding: 15px 25px;
     font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 15px;
+    border: 1px solid #d6ccbe;
+    border-radius: 30px;
+    background-color: #d6ccbe;
+    color: #4a4947;
+    font-weight: 500;
 }
 
 #sendMessageBtn {
-    padding: 10px 20px;
+    padding: 15px 25px;
     background-color: #a46540;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 30px;
     cursor: pointer;
+    font-size: 1rem;
 }
 
 #sendMessageBtn:hover {
@@ -124,31 +162,40 @@ nav a:hover {
 footer {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center; /* Optional: Center content horizontally */
+    gap: 15px;
+    box-shadow: 0px -8px 20px 0 rgba(0, 0, 0, 0.2);
+    width: 100%; /* Ensure it spans the full width */
+    padding-bottom: 8px;
+    padding-top: 9.7px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .mic-button {
-    padding: 10px 15px;
-    background-color: #e9ccbc;
+    padding: 15px 15px;
+    background-color: #a83b00;
     color: white;
     border: none;
-    border-radius: 15px;
     cursor: pointer;
     margin-left: 15px;
+    border-radius: 30px;
 }
 
 .done-button{
-    padding: 10px 20px;
-    background-color: #40a461;
+    padding: 15px 25px;
+    background-color: #006722;
     color: white;
     border: none;
-    border-radius: 15px;
+    border-radius: 30px;
     cursor: pointer;
     margin-right: 10px;
+    font-weight: 550;
+    font-size: 1rem;
 }
 
 .mic-button:hover {
-    background-color: #8a4b30;
+    background-color: #b17457;
 }
 
 .done-button:hover{
@@ -156,29 +203,31 @@ footer {
 }
 
 #sendMessageBtn {
-    padding: 10px 20px;
+    padding: 15px 25px;
     background-color: #a46540;
     color: white;
     border: none;
-    border-radius: 15px;
+    border-radius: 30px;
     cursor: pointer;
+    font-weight: 550;
+    letter-spacing: 0.01rem;
 }
 
 #sendMessageBtn:hover {
-    background-color: #8a4b30;
+    background-color: #b17457;
 }
 
 /* Popup styles */
 .popup {
     position: fixed;
-    top: 50%;
+    top: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 300px;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    background-color: #f1ead9;
+    box-shadow: 0px 8px 20px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 30px;
     text-align: center;
     z-index: 1000;
 }
@@ -201,10 +250,10 @@ footer {
 
 .waveform {
     width: 100%;
-    height: 20px;
+    height: 25px;
     background: linear-gradient(90deg, #ddd, #a46540, #ddd);
     animation: pulse 1.5s infinite;
-    border-radius: 5px;
+    border-radius: 7px;
 }
 
 @keyframes pulse {
@@ -219,15 +268,16 @@ footer {
 }
 
 #closePopup {
-    padding: 10px 20px;
+    padding: 10px 25px;
     border: none;
     background-color: #a46540;
     color: #fff;
-    border-radius: 5px;
+    border-radius: 30px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 #closePopup:hover {
-    background-color: #8a4b30;
+    background-color: #b17457;
 }
 
