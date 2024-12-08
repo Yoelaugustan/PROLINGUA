@@ -1,12 +1,25 @@
 let mediaRecorder;
 let audioChunks = [];
+
 const micButton = document.querySelector(".mic-button");
 const popup = document.getElementById("micPopup");
 const closePopupButton = document.getElementById("closePopup");
+
 const recordingStatus = document.getElementById("recordingStatus");
 const messageInput = document.getElementById("messageInput");
 const sendMessageBtn = document.getElementById("sendMessageBtn");
 const messagesContainer = document.querySelector(".chat-container");
+
+const doneButton = document.getElementById("done-button");
+const confirmPopup = document.getElementById("confirmPopup");
+const closeConfirmButton = document.getElementById("closeConfirmButton");
+
+const openResultButton = document.getElementById("openResultPopup");
+const resultPopup = document.getElementById("resultPopup");
+const seeResultButton = document.getElementById("seeResultButton");
+
+const blackOverlay = document.getElementById("blackOverlay");
+
 
 // Function to add a message to the chat
 function addMessage(messageText, isUser = true) {
@@ -85,3 +98,28 @@ sendMessageBtn.addEventListener("click", () => {
         messageInput.value = ""; // Clear the input box
     }
 });
+
+// Show the pop-up when the DONE button is clicked
+doneButton.addEventListener("click", async () => {
+    confirmPopup.classList.remove("hidden"); // Remove the "hidden" class to make it visible
+    blackOverlay.classList.remove("hidden");
+});
+
+// Close the pop-up when the Close button is clicked
+closeConfirmButton.addEventListener("click", () => {
+    confirmPopup.classList.add("hidden"); // Add the "hidden" class to hide it again
+    blackOverlay.classList.add("hidden");
+});
+
+openResultButton.addEventListener("click", async () => {
+    resultPopup.classList.remove("hidden"); // Remove the "hidden" class to make it visible
+    confirmPopup.classList.add("hidden");
+    blackOverlay.classList.remove("hidden");
+});
+
+seeResultButton.addEventListener("click", () => {
+    resultPopup.classList.add("hidden"); // Add the "hidden" class to hide it again
+    blackOverlay.classList.add("hidden");
+});
+
+/* nathaaan nanti yg buat more serult, javascriptnya masukin ke seeResultButton biar muncull */
