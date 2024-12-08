@@ -424,3 +424,70 @@ footer {
 .overlay.hidden {
     display: none;
 }
+
+#seeResult{
+    background-color: #f1ead9;
+    top: 29%;
+    left: 37%;
+    padding-top: 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    width: 400px;
+}
+
+.score-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(#ff4d4d 0%, #ff4d4d 38%, #ddd 38%, #ddd 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px;
+    position: relative;
+}
+
+.score-text {
+    position: absolute;
+    text-align: center;
+}
+
+#score-percentage {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+#score-level {
+    padding-top: 15px;
+    font-size: 1.0rem;
+    font-weight: bold;
+    color: red;
+}
+
+.result-description {
+    margin: 15px 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.action-button {
+    display: inline-block;
+    margin: 10px 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #006722;
+    color: white;
+}
+
+.retry-button {
+    background-color: #ca1111;
+}
+
+.action-button:hover {
+    opacity: 0.9;
+}
