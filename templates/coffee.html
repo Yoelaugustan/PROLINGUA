@@ -56,6 +56,20 @@
         
         <div id="blackOverlay" class="overlay hidden"></div>
 
+
+        <div id="seeResult" class="popup hidden">
+            <div class="score-circle">
+                <div class="score-text">
+                    <span id="score-percentage">38%</span>
+                    <p id="score-level">POOR</p>
+                </div>
+            </div>
+            <p class="result-description">You need to practice your pronunciation</p>
+            <button class="action-button retry-button" id="retry" onclick="window.location.href='/templates/coffee.html';">Retry</button>
+            <button class="action-button" id="check-answer" onclick="window.location.href='/templates/coffee.html';">Check the Answer</button>
+        </div>
+
+
         <footer>
             <button class="mic-button">&#x1F3A4;</button>
             <input type="text" id="messageInput" placeholder="Press the mic button to record" />

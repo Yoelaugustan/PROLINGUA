@@ -20,6 +20,13 @@ const seeResultButton = document.getElementById("seeResultButton");
 
 const blackOverlay = document.getElementById("blackOverlay");
 
+const moreResultPopup = document.getElementById("seeResult");  
+const scorePercentage = document.getElementById('score-percentage');
+const scoreLevel = document.getElementById('score-level');
+const retryButton = document.getElementById('retry');
+const checkAnswerButton = document.getElementById('check-answer');
+
+
 const questions = [
     "What is your role in your current job?",
     "What skill do you use most at work?",
@@ -140,7 +147,25 @@ openResultButton.addEventListener("click", async () => {
 
 seeResultButton.addEventListener("click", () => {
     resultPopup.classList.add("hidden"); // Add the "hidden" class to hide it again
-    blackOverlay.classList.add("hidden");
+    moreResultPopup.classList.remove("hidden");
+
+    let score = 0; // Simulasi nilai skor awal
+
+    function updateScore(score) {
+        const level = score >= 80 ? 'GOOD' : score >= 50 ? 'FAIR' : 'POOR';
+        scorePercentage.textContent = `${score}%`;
+        scoreLevel.textContent = level;
+        scoreLevel.style.color = level === 'GOOD' ? 'green' : level === 'FAIR' ? 'orange' : 'red';
+        document.querySelector('.score-circle').style.background = `conic-gradient(
+            ${level === 'GOOD' ? 'green' : level === 'FAIR' ? 'orange' : 'red'} 0%, 
+            ${level === 'GOOD' ? 'green' : level === 'FAIR' ? 'orange' : 'red'} ${score}%, 
+            #ddd ${score}%, 
+            #ddd 100%
+        )`;
+    }
+
+    updateScore(score);
+    // Event untuk retry
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -148,5 +173,13 @@ document.addEventListener("DOMContentLoaded", () => {
     messageInput.disabled = true; // Disable the input field
 });
 
+retryButton.addEventListener('click', () => {
+    moreResultPopup.classList.add("hidden"); 
+    blackOverlay.classList.add("hidden");   
+ });
 
-/* nathaaan nanti yg buat more see result, javascriptnya masukin ke seeResultButton biar muncull */
+    // Event untuk check the answer
+checkAnswerButton.addEventListener('click', () => {
+    moreResultPopup.classList.add("hidden");
+    blackOverlay.classList.add("hidden");   
+});
