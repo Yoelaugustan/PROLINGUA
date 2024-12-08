@@ -32,6 +32,8 @@ function addMessage(messageText, isUser = true) {
 
 micButton.addEventListener("click", async () => {
     try {
+        audioChunks = [];
+
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorder = new MediaRecorder(stream);
 
@@ -41,8 +43,7 @@ micButton.addEventListener("click", async () => {
 
         mediaRecorder.onstop = async () => {
             recordedBlob = new Blob(audioChunks, { type: 'audio/wav' });
-            audioChunks = []; // Reset chunks
-            // Add transcription logic here
+            audioChunks = [];
         };
 
         mediaRecorder.start();

@@ -71,7 +71,9 @@ def upload_audio():
 
         # Calculate overall pronunciation accuracy
         overall_accuracy = calculate_overall_pronunciation(last_uploaded_file_path)
-        overall_score_percentage = overall_accuracy['score'] if overall_accuracy['score'] is not None else None
+        overall_score_percentage = overall_accuracy['score'] * 100 if overall_accuracy['score'] is not None else None
+
+        print(overall_accuracy)
 
         # Extract word-level timings from the transcription
         word_timings = {}
@@ -85,7 +87,11 @@ def upload_audio():
         word_accuracies = {}
         if word_timings:
             word_accuracies = calculate_pronunciation_per_word(last_uploaded_file_path, word_timings)
-            print(word_accuracies)
+
+        print(word_accuracies)
+
+        # cleanup_files([last_uploaded_file_path, converted_filepath])
+        
         return jsonify({
             'user_transcript': user_transcript,
             'overall_accuracy': {
@@ -102,37 +108,10 @@ def calculate_overall_pronunciation(audio_file_path):
     # Load the pipeline for pronunciation accuracy
     pipe = pipeline("audio-classification", model="JohnJumon/pronunciation_accuracy", device=0)  # Use GPU if available
     result = pipe(audio_file_path)
-    print(result)
-
-    # Label values mapping (assign numerical values to labels)
-    label_values = {
-        'Excellent': 100,
-        'Good': 80,
-        'Average': 60,
-        'Poor': 40,
-        'Extremely Poor': 20
-    }
 
     if result:
-        weighted_sum = 0
-        total_score = 0
-        
-        # Calculate the weighted sum based on scores and label values
-        for entry in result:
-            label = entry['label']
-            score = entry['score']
-            
-            if label in label_values:
-                weighted_sum += label_values[label] * score
-                total_score += score
-
-        # Calculate the final overall score as a percentage
-        if total_score > 0:
-            print(weighted_sum)
-            print(total_score)
-            overall_score = weighted_sum / total_score
-        else:
-            overall_score = 0  # Handle cases where total_score is 0
+        # Calculate the final overall score using the existing helper function
+        overall_score = calculate_weighted_score(result)
 
         # Return a label based on the calculated overall score
         return {
@@ -147,10 +126,12 @@ def calculate_overall_pronunciation(audio_file_path):
         return {"score": None, "label": "No result"}
 
 def calculate_pronunciation_per_word(audio_file_path, word_timings):
+    # Load the pipeline for pronunciation accuracy
     pipe = pipeline("audio-classification", model="JohnJumon/pronunciation_accuracy", device=0)  # Use GPU if available
     word_accuracies = {}
     audio = AudioSegment.from_file(audio_file_path, format="wav")
     word_counter = 1
+
     for word, (start_time, end_time) in word_timings.items():
         # Extract audio segment for the word
         word_audio = audio[start_time * 1000:end_time * 1000]  # pydub uses milliseconds
@@ -160,10 +141,16 @@ def calculate_pronunciation_per_word(audio_file_path, word_timings):
         try:
             result = pipe(word_audio_path)
             if result:
-                highest_score_result = max(result, key=lambda x: x['score'])
+                final_score = calculate_weighted_score(result)
+                
+                # Assign label based on the final score
                 word_accuracies[word] = {
-                    "score": highest_score_result['score'] * 100,
-                    "label": highest_score_result['label']
+                    "score": final_score,
+                    "label": "Excellent" if final_score >= 90 else
+                    "Good" if final_score >= 70 else
+                    "Average" if final_score >= 50 else
+                    "Poor" if final_score >= 30 else
+                    "Extremely Poor"
                 }
             else:
                 word_accuracies[word] = {
@@ -179,8 +166,34 @@ def calculate_pronunciation_per_word(audio_file_path, word_timings):
         
         # Clean up temporary file
         os.remove(word_audio_path)
+        word_counter += 1
     
     return word_accuracies
+
+def calculate_weighted_score(result):
+    label_values = {
+        'Excellent': 100,
+        'Good': 75,
+        'Average': 50,
+        'Poor': 25,
+        'Extremely Poor': 0
+    }
+
+    weighted_sum = 0
+    total_score = 0
+
+    for entry in result:
+        label = entry['label']
+        score = entry['score']
+        if label in label_values:
+            weighted_sum += label_values[label] * score
+            total_score += score
+
+    # Return the weighted score as a percentage if total_score is greater than zero
+    if total_score > 0:
+        return weighted_sum / total_score
+    else:
+        return 0  # Handle cases where total_score is 0
 
 if __name__ == '__main__':
     app.run(debug=True)
