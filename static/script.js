@@ -20,6 +20,18 @@ const seeResultButton = document.getElementById("seeResultButton");
 
 const blackOverlay = document.getElementById("blackOverlay");
 
+const questions = [
+    "What is your role in your current job?",
+    "What skill do you use most at work?",
+    "How do you prioritize tasks?",
+    "What do you say when you need help?",
+    "How do you share ideas in a meeting?",
+    "What do you do if you disagree with someone?",
+    "How do you handle an urgent issue?",
+    "What do you say to an unhappy client?",
+    "How do you ask for a meeting reschedule?",
+    "What do you say to thank a coworker?"
+];
 
 // Function to add a message to the chat
 function addMessage(messageText, isUser = true) {
@@ -28,6 +40,13 @@ function addMessage(messageText, isUser = true) {
     messageElement.textContent = messageText;
     messagesContainer.appendChild(messageElement);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// buat display random questions
+function displayRandomQuestion() {
+    const randomIndex = Math.floor(Math.random() * questions.length);
+    const question = questions[randomIndex];
+    addMessage(question, false); // Add as AI message
 }
 
 micButton.addEventListener("click", async () => {
@@ -97,6 +116,7 @@ sendMessageBtn.addEventListener("click", () => {
     if (userMessage !== "") {
         addMessage(userMessage, true); // Add message to the chat container
         messageInput.value = ""; // Clear the input box
+        displayRandomQuestion();
     }
 });
 
@@ -123,4 +143,10 @@ seeResultButton.addEventListener("click", () => {
     blackOverlay.classList.add("hidden");
 });
 
-/* nathaaan nanti yg buat more serult, javascriptnya masukin ke seeResultButton biar muncull */
+document.addEventListener("DOMContentLoaded", () => {
+    const messageInput = document.getElementById("messageInput");
+    messageInput.disabled = true; // Disable the input field
+});
+
+
+/* nathaaan nanti yg buat more see result, javascriptnya masukin ke seeResultButton biar muncull */
