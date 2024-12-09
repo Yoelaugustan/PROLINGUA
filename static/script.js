@@ -108,6 +108,7 @@ closePopupButton.addEventListener("click", () => {
 
                 if (response.ok) {
                     const data = await response.json();
+                    console.log("Backend response data:", data);
                     messageInput.value = data.user_transcript; // Show transcript in the input box
                 
                     userScores.push(data.overall_accuracy.score)
@@ -190,34 +191,68 @@ document.addEventListener("DOMContentLoaded", () => {
 retryButton.addEventListener('click', () => {
     moreResultPopup.classList.add("hidden"); 
     blackOverlay.classList.add("hidden");   
- });
+});
 
     // Event untuk check the answer
 checkAnswerButton.addEventListener('click', () => {
     moreResultPopup.classList.add("hidden");
     blackOverlay.classList.add("hidden");   
 
-    const threshold = 60;
-
     const userMessageElements = document.querySelectorAll('.message.user');
 
     recordingsData.forEach((recording, index) => {
-        const userMessageElement = userMessageElements[index]; // Get the corresponding message element
+        console.log(`Processing recording #${index + 1}`, recording); // Debug: Log the current recording
     
+        const userMessageElement = userMessageElements[index]; // Get the corresponding message element
         if (!userMessageElement) {
-            console.warn(`No user message element found for index ${index}`);
+            console.warn(`No user message element found for index ${index}`); // Debug: Warn if no element is found
             return; // Skip if there's no matching element
         }
     
+        console.log(`User message element found for index ${index}:`, userMessageElement.textContent); // Debug: Log the element's content
+    
         let messageHTML = userMessageElement.textContent.split(" ").map((word) => {
-            const wordData = recording.wordAccuracies.find(w => w.word === word);
-            if (wordData && wordData.accuracy < threshold) {
-                return `<span style="color: red">${word}</span>`;
+            console.log(`Processing word: "${word}"`);
+        
+            const wordDataArray = Object.entries(recording.wordAccuracies || {}).map(([key, value]) => ({
+                word: key.trim(),
+                ...value,
+            }));
+        
+            console.log(`Word data array for current recording:`, wordDataArray);
+        
+            const wordData = wordDataArray.find(w => w.word === word);
+            if (wordData) {
+                console.log(`Found accuracy data for word "${word}":`, wordData);
+        
+                const { score } = wordData; // Correctly accessing 'score' instead of 'accuracy'
+                let color;
+        
+                if (score > 90) {
+                    color = "green";
+                } else if (score > 70) {
+                    color = "lightgreen";
+                } else if (score > 50) {
+                    color = "yellow";
+                } else if (score > 30) {
+                    color = "orange";
+                } else {
+                    color = "red";
+                }
+        
+                console.log(`Assigning color "${color}" for word "${word}" with score ${score}`);
+                return `<span style="color: ${color}">${word}</span>`;
+            } else {
+                console.log(`No accuracy data found for word "${word}".`);
             }
             return word;
         }).join(" ");
     
+        console.log(`Generated HTML for user message:`, messageHTML); // Debug: Log the final HTML
+    
         userMessageElement.innerHTML = messageHTML; // Update the element with highlighted words
+        console.log(`Updated userMessageElement for index ${index}`); // Debug: Log successful update
     });
-
+    
 });
+    

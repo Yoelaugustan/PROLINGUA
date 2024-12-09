@@ -109,7 +109,7 @@ def calculate_overall_pronunciation(audio_file_path):
 
     if result:
         # Calculate the final overall score using the existing helper function
-        overall_score = calculate_weighted_score(result)
+        overall_score = calculate_weighted_score(result, "overall")
 
         # Return a label based on the calculated overall score
         return {
@@ -139,7 +139,7 @@ def calculate_pronunciation_per_word(audio_file_path, word_timings):
         try:
             result = pipe(word_audio_path)
             if result:
-                final_score = calculate_weighted_score(result)
+                final_score = calculate_weighted_score(result, "word")
                 
                 # Assign label based on the final score
                 word_accuracies[word] = {
@@ -168,14 +168,23 @@ def calculate_pronunciation_per_word(audio_file_path, word_timings):
     
     return word_accuracies
 
-def calculate_weighted_score(result):
-    label_values = {
-        'Excellent': 100,
-        'Good': 75,
-        'Average': 50,
-        'Poor': 25,
-        'Extremely Poor': 0
-    }
+def calculate_weighted_score(result, checkName):
+    if(checkName == "overall"):
+        label_values = {
+            'Excellent': 100,
+            'Good': 80,
+            'Average': 60,
+            'Poor': 40,
+            'Extremely Poor': 20
+        }
+    else:
+        label_values = {
+            'Excellent': 90,
+            'Good': 70,
+            'Average': 50,
+            'Poor': 30,
+            'Extremely Poor': 0
+        }
 
     weighted_sum = 0
     total_score = 0
@@ -192,6 +201,8 @@ def calculate_weighted_score(result):
         return weighted_sum / total_score
     else:
         return 0  # Handle cases where total_score is 0
+
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
