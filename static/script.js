@@ -1,5 +1,7 @@
 let mediaRecorder;
 let audioChunks = [];
+let userScores = [];
+let recordingsData = []; 
 
 const micButton = document.querySelector(".mic-button");
 const popup = document.getElementById("micPopup");
@@ -107,6 +109,16 @@ closePopupButton.addEventListener("click", () => {
                 if (response.ok) {
                     const data = await response.json();
                     messageInput.value = data.user_transcript; // Show transcript in the input box
+                
+                    userScores.push(data.overall_accuracy.score)
+                    
+                    const recordingId = new Date().toISOString(); // Timestamp as a unique ID
+
+                    recordingsData.push({
+                        id: recordingId,
+                        userTranscript: data.user_transcript,
+                        wordAccuracies: data.word_accuracies
+                    });
                 } else {
                     console.error("Failed to transcribe audio.");
                 }
@@ -131,6 +143,9 @@ sendMessageBtn.addEventListener("click", () => {
 doneButton.addEventListener("click", async () => {
     confirmPopup.classList.remove("hidden"); // Remove the "hidden" class to make it visible
     blackOverlay.classList.remove("hidden");
+
+    const overallScore = userScores.reduce((a, b) => a + b, 0) / userScores.length;
+    updateScore(overallScore)
 });
 
 // Close the pop-up when the Close button is clicked
@@ -148,25 +163,23 @@ openResultButton.addEventListener("click", async () => {
 seeResultButton.addEventListener("click", () => {
     resultPopup.classList.add("hidden"); // Add the "hidden" class to hide it again
     moreResultPopup.classList.remove("hidden");
-
-    let score = 0; // Simulasi nilai skor awal
-
-    function updateScore(score) {
-        const level = score >= 80 ? 'GOOD' : score >= 50 ? 'FAIR' : 'POOR';
-        scorePercentage.textContent = `${score}%`;
-        scoreLevel.textContent = level;
-        scoreLevel.style.color = level === 'GOOD' ? 'green' : level === 'FAIR' ? 'orange' : 'red';
-        document.querySelector('.score-circle').style.background = `conic-gradient(
-            ${level === 'GOOD' ? 'green' : level === 'FAIR' ? 'orange' : 'red'} 0%, 
-            ${level === 'GOOD' ? 'green' : level === 'FAIR' ? 'orange' : 'red'} ${score}%, 
-            #ddd ${score}%, 
-            #ddd 100%
-        )`;
-    }
-
-    updateScore(score);
-    // Event untuk retry
 });
+
+function updateScore(score) {
+    const level = score >= 80 ? 'GOOD' : score >= 50 ? 'FAIR' : 'POOR';
+    const formattedScore = score.toFixed(2); // Format the score to two decimal places
+
+    scorePercentage.textContent = `${formattedScore}%`;
+    scoreLevel.textContent = level;
+    scoreLevel.style.color = level === 'GOOD' ? 'green' : level === 'FAIR' ? 'orange' : 'red';
+    document.querySelector('.score-circle').style.background = `conic-gradient(
+        ${level === 'GOOD' ? 'green' : level === 'FAIR' ? 'orange' : 'red'} 0%, 
+        ${level === 'GOOD' ? 'green' : level === 'FAIR' ? 'orange' : 'red'} ${score}%, 
+        #ddd ${score}%, 
+        #ddd 100%
+    )`;
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const messageInput = document.getElementById("messageInput");
@@ -182,4 +195,28 @@ retryButton.addEventListener('click', () => {
 checkAnswerButton.addEventListener('click', () => {
     moreResultPopup.classList.add("hidden");
     blackOverlay.classList.add("hidden");   
+
+    const threshold = 60;
+
+    const userMessageElements = document.querySelectorAll('.message.user');
+
+    recordingsData.forEach((recording, index) => {
+        const userMessageElement = userMessageElements[index]; // Get the corresponding message element
+    
+        if (!userMessageElement) {
+            console.warn(`No user message element found for index ${index}`);
+            return; // Skip if there's no matching element
+        }
+    
+        let messageHTML = userMessageElement.textContent.split(" ").map((word) => {
+            const wordData = recording.wordAccuracies.find(w => w.word === word);
+            if (wordData && wordData.accuracy < threshold) {
+                return `<span style="color: red">${word}</span>`;
+            }
+            return word;
+        }).join(" ");
+    
+        userMessageElement.innerHTML = messageHTML; // Update the element with highlighted words
+    });
+
 });

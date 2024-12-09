@@ -32,7 +32,7 @@ def coffee():
 
 @app.route('/upload_audio', methods=['POST'])
 def upload_audio():
-    global file_counter, last_uploaded_file_path
+    global file_counter, last_uploaded_file_path, pronunciation_score
 
     try:
         # Check for audio in the request
@@ -71,9 +71,9 @@ def upload_audio():
 
         # Calculate overall pronunciation accuracy
         overall_accuracy = calculate_overall_pronunciation(last_uploaded_file_path)
-        overall_score_percentage = overall_accuracy['score'] * 100 if overall_accuracy['score'] is not None else None
+        overall_score_percentage = overall_accuracy['score'] if overall_accuracy['score'] is not None else None
 
-        print(overall_accuracy)
+        print(overall_score_percentage)
 
         # Extract word-level timings from the transcription
         word_timings = {}
@@ -89,8 +89,6 @@ def upload_audio():
             word_accuracies = calculate_pronunciation_per_word(last_uploaded_file_path, word_timings)
 
         print(word_accuracies)
-
-        # cleanup_files([last_uploaded_file_path, converted_filepath])
         
         return jsonify({
             'user_transcript': user_transcript,
