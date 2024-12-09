@@ -182,6 +182,7 @@ function updateScore(score) {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+    displayRandomQuestion();
     const messageInput = document.getElementById("messageInput");
     messageInput.disabled = true; // Disable the input field
 });
