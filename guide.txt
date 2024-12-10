@@ -1,0 +1,15 @@
+1. Click Start Button to start the conversation
+2. To send a message, use the mic button
+3. When the popup recording is shown, start speaking the sentece that you want to send
+4. To stop the recording click Ok
+5. Wait for the program to transcript, It will show the transcript in the message tab at the bottom
+6. Click the send button to send the message
+7. Repeat step 2 until 6 up to your liking
+8. If you want to check your pronunciation score click the done button and comfirm button
+9. To see which word you done good or bad, click the Check Answer Button,
+   Words That is coloured:
+   Green : 90 - 100 %
+   Light Green : 70 - 90 %
+   Yellow : 50 - 70 %
+   Orange : 30 - 50 %
+   Red : 0 - 30 %
