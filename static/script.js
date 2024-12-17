@@ -42,7 +42,6 @@ const questions = [
     "What do you say to thank a coworker?"
 ];
 
-// Function to add a message to the chat
 function addMessage(messageText, isUser = true) {
     const messageElement = document.createElement("div");
     messageElement.classList.add("message", isUser ? "user" : "ai");
@@ -51,11 +50,10 @@ function addMessage(messageText, isUser = true) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-// buat display random questions
 function displayRandomQuestion() {
     const randomIndex = Math.floor(Math.random() * questions.length);
     const question = questions[randomIndex];
-    addMessage(question, false); // Add as AI message
+    addMessage(question, false);
 }
 
 micButton.addEventListener("click", async () => {
@@ -82,7 +80,6 @@ micButton.addEventListener("click", async () => {
 
     } catch (error) {
         console.error("Error accessing microphone:", error);
-        // Log the type of error for better debugging
         if (error.name) {
             console.log("Error name:", error.name);
         }
@@ -96,7 +93,6 @@ closePopupButton.addEventListener("click", () => {
         mediaRecorder.onstop = async () => {
             const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
 
-            // Send audio to backend for transcription
             const formData = new FormData();
             formData.append("audio", audioBlob, "recording.wav");
 
@@ -109,11 +105,11 @@ closePopupButton.addEventListener("click", () => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log("Backend response data:", data);
-                    messageInput.value = data.user_transcript; // Show transcript in the input box
+                    messageInput.value = data.user_transcript;
                 
                     userScores.push(data.overall_accuracy.score)
                     
-                    const recordingId = new Date().toISOString(); // Timestamp as a unique ID
+                    const recordingId = new Date().toISOString();
 
                     recordingsData.push({
                         id: recordingId,
@@ -134,41 +130,39 @@ closePopupButton.addEventListener("click", () => {
 sendMessageBtn.addEventListener("click", () => {
     const userMessage = messageInput.value.trim();
     if (userMessage !== "") {
-        addMessage(userMessage, true); // Add message to the chat container
-        messageInput.value = ""; // Clear the input box
+        addMessage(userMessage, true);
+        messageInput.value = "";
         displayRandomQuestion();
     }
 });
 
-// Show the pop-up when the DONE button is clicked
 doneButton.addEventListener("click", async () => {
-    confirmPopup.classList.remove("hidden"); // Remove the "hidden" class to make it visible
+    confirmPopup.classList.remove("hidden");
     blackOverlay.classList.remove("hidden");
 
     const overallScore = userScores.reduce((a, b) => a + b, 0) / userScores.length;
     updateScore(overallScore)
 });
 
-// Close the pop-up when the Close button is clicked
 closeConfirmButton.addEventListener("click", () => {
-    confirmPopup.classList.add("hidden"); // Add the "hidden" class to hide it again
+    confirmPopup.classList.add("hidden");
     blackOverlay.classList.add("hidden");
 });
 
 openResultButton.addEventListener("click", async () => {
-    resultPopup.classList.remove("hidden"); // Remove the "hidden" class to make it visible
+    resultPopup.classList.remove("hidden");
     confirmPopup.classList.add("hidden");
     blackOverlay.classList.remove("hidden");
 });
 
 seeResultButton.addEventListener("click", () => {
-    resultPopup.classList.add("hidden"); // Add the "hidden" class to hide it again
+    resultPopup.classList.add("hidden");
     moreResultPopup.classList.remove("hidden");
 });
 
 function updateScore(score) {
     const level = score >= 80 ? 'GOOD' : score >= 50 ? 'FAIR' : 'POOR';
-    const formattedScore = score.toFixed(2); // Format the score to two decimal places
+    const formattedScore = score.toFixed(2);
 
     scorePercentage.textContent = `${formattedScore}%`;
     scoreLevel.textContent = level;
@@ -185,7 +179,7 @@ function updateScore(score) {
 document.addEventListener("DOMContentLoaded", () => {
     displayRandomQuestion();
     const messageInput = document.getElementById("messageInput");
-    messageInput.disabled = true; // Disable the input field
+    messageInput.disabled = true;
 });
 
 retryButton.addEventListener('click', () => {
@@ -193,7 +187,6 @@ retryButton.addEventListener('click', () => {
     blackOverlay.classList.add("hidden");   
 });
 
-    // Event untuk check the answer
 checkAnswerButton.addEventListener('click', () => {
     moreResultPopup.classList.add("hidden");
     blackOverlay.classList.add("hidden");   
@@ -201,15 +194,15 @@ checkAnswerButton.addEventListener('click', () => {
     const userMessageElements = document.querySelectorAll('.message.user');
 
     recordingsData.forEach((recording, index) => {
-        console.log(`Processing recording #${index + 1}`, recording); // Debug: Log the current recording
+        console.log(`Processing recording #${index + 1}`, recording);
     
-        const userMessageElement = userMessageElements[index]; // Get the corresponding message element
+        const userMessageElement = userMessageElements[index];
         if (!userMessageElement) {
-            console.warn(`No user message element found for index ${index}`); // Debug: Warn if no element is found
-            return; // Skip if there's no matching element
+            console.warn(`No user message element found for index ${index}`);
+            return;
         }
     
-        console.log(`User message element found for index ${index}:`, userMessageElement.textContent); // Debug: Log the element's content
+        console.log(`User message element found for index ${index}:`, userMessageElement.textContent);
     
         let messageHTML = userMessageElement.textContent.split(" ").map((word) => {
             console.log(`Processing word: "${word}"`);
@@ -225,7 +218,7 @@ checkAnswerButton.addEventListener('click', () => {
             if (wordData) {
                 console.log(`Found accuracy data for word "${word}":`, wordData);
         
-                const { score } = wordData; // Correctly accessing 'score' instead of 'accuracy'
+                const { score } = wordData;
                 let color;
         
                 if (score > 90) {
@@ -248,10 +241,10 @@ checkAnswerButton.addEventListener('click', () => {
             return word;
         }).join(" ");
     
-        console.log(`Generated HTML for user message:`, messageHTML); // Debug: Log the final HTML
+        console.log(`Generated HTML for user message:`, messageHTML);
     
-        userMessageElement.innerHTML = messageHTML; // Update the element with highlighted words
-        console.log(`Updated userMessageElement for index ${index}`); // Debug: Log successful update
+        userMessageElement.innerHTML = messageHTML;
+        console.log(`Updated userMessageElement for index ${index}`);
     });
     
 });

@@ -8,15 +8,12 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-# Enable CORS for all routes
 CORS(app)
 
-# Set the directory where audio files will be stored temporarily
 UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure the uploads folder exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Load the Whisper model
 model = whisper.load_model("base", device="cuda")
 
 file_counter = 1
@@ -35,24 +32,20 @@ def upload_audio():
     global file_counter, last_uploaded_file_path, pronunciation_score
 
     try:
-        # Check for audio in the request
         if 'audio' not in request.files:
             return jsonify({'error': 'No audio file provided'}), 400
         
         audio_file = request.files['audio']
         if audio_file.filename == '':
             return jsonify({'error': 'Empty file name'}), 400
-        
-        # Generate a secure filename and save the original audio file temporarily
+
         original_filename = secure_filename(audio_file.filename)
         original_filepath = os.path.join(app.config['UPLOAD_FOLDER'], original_filename)
         audio_file.save(original_filepath)
 
-        # Convert the uploaded audio to WAV format using pydub
         converted_filename = f"speech{file_counter}.wav"
         converted_filepath = os.path.join(app.config['UPLOAD_FOLDER'], converted_filename)
 
-        # Load the uploaded audio and export as WAV
         audio = AudioSegment.from_file(original_filepath)
         audio.export(converted_filepath, format="wav")
 
@@ -60,22 +53,18 @@ def upload_audio():
         last_uploaded_file_path = converted_filepath
         print(last_uploaded_file_path)
 
-        # Validate file size
         if os.path.getsize(converted_filepath) == 0:
             return jsonify({'error': 'Empty audio file received'}), 400
 
-        # Transcribe audio
         transcription = model.transcribe(last_uploaded_file_path, language="en", word_timestamps=True)
         user_transcript = transcription['text']
         print(user_transcript)
 
-        # Calculate overall pronunciation accuracy
         overall_accuracy = calculate_overall_pronunciation(last_uploaded_file_path)
         overall_score_percentage = overall_accuracy['score'] if overall_accuracy['score'] is not None else None
 
         print(overall_score_percentage)
 
-        # Extract word-level timings from the transcription
         word_timings = {}
         if 'segments' in transcription:
             for segment in transcription['segments']:
@@ -83,7 +72,6 @@ def upload_audio():
                     for word_info in segment['words']:
                         word_timings[word_info['word']] = (word_info['start'], word_info['end'])
         
-        # Calculate pronunciation accuracy for each word
         word_accuracies = {}
         if word_timings:
             word_accuracies = calculate_pronunciation_per_word(last_uploaded_file_path, word_timings)
@@ -103,15 +91,12 @@ def upload_audio():
         return jsonify({'error': 'Audio processing failed', 'details': str(e)}), 500
 
 def calculate_overall_pronunciation(audio_file_path):
-    # Load the pipeline for pronunciation accuracy
     pipe = pipeline("audio-classification", model="JohnJumon/pronunciation_accuracy", device=0)  # Use GPU if available
     result = pipe(audio_file_path)
 
     if result:
-        # Calculate the final overall score using the existing helper function
         overall_score = calculate_weighted_score(result, "overall")
 
-        # Return a label based on the calculated overall score
         return {
             "score": overall_score,
             "label": "Excellent" if overall_score >= 90 else
@@ -124,15 +109,13 @@ def calculate_overall_pronunciation(audio_file_path):
         return {"score": None, "label": "No result"}
 
 def calculate_pronunciation_per_word(audio_file_path, word_timings):
-    # Load the pipeline for pronunciation accuracy
     pipe = pipeline("audio-classification", model="JohnJumon/pronunciation_accuracy", device=0)  # Use GPU if available
     word_accuracies = {}
     audio = AudioSegment.from_file(audio_file_path, format="wav")
     word_counter = 1
 
     for word, (start_time, end_time) in word_timings.items():
-        # Extract audio segment for the word
-        word_audio = audio[start_time * 1000:end_time * 1000]  # pydub uses milliseconds
+        word_audio = audio[start_time * 1000:end_time * 1000]
         word_audio_path = f"temp_word{word_counter}.wav"
         word_audio.export(word_audio_path, format="wav")
         
@@ -140,8 +123,7 @@ def calculate_pronunciation_per_word(audio_file_path, word_timings):
             result = pipe(word_audio_path)
             if result:
                 final_score = calculate_weighted_score(result, "word")
-                
-                # Assign label based on the final score
+
                 word_accuracies[word] = {
                     "score": final_score,
                     "label": "Excellent" if final_score >= 90 else
@@ -161,8 +143,7 @@ def calculate_pronunciation_per_word(audio_file_path, word_timings):
                 "score": None,
                 "label": "Error"
             }
-        
-        # Clean up temporary file
+
         os.remove(word_audio_path)
         word_counter += 1
     
@@ -196,11 +177,10 @@ def calculate_weighted_score(result, checkName):
             weighted_sum += label_values[label] * score
             total_score += score
 
-    # Return the weighted score as a percentage if total_score is greater than zero
     if total_score > 0:
         return weighted_sum / total_score
     else:
-        return 0  # Handle cases where total_score is 0
+        return 0
 
     
 
